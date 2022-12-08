@@ -59,7 +59,7 @@ function createAccessToken(id) {
     const accessToken = jwt.sign(
       { id: id }, 
       SECRET_KEY, 
-      { expiresIn: '10s' }) 
+      { expiresIn: '1h' }) 
   
     return accessToken;
 }

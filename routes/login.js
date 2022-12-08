@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
+const isLogin = require('../middleware/isLogin');
 const { User } = require('../models');
 
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -13,7 +14,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 // 로그인
 const tokenObject = {};
 
-router.post('/', async (req, res) => {
+router.post('/', isLogin, async (req, res) => {
     const { nickname, password } = req.body;
 
     try {
@@ -32,7 +33,7 @@ router.post('/', async (req, res) => {
         const accessToken = jwt.sign(
             { id: user.nickname },
             SECRET_KEY,
-            { expiresIn: '30m' }
+            { expiresIn: '1h' }
         );
 
         const refreshToken = jwt.sign(

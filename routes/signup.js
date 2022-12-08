@@ -4,8 +4,9 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 const { User } = require('../models');
+const isLogin = require('../middleware/isLogin');
 
-router.post('/' , async (req, res) => {
+router.post('/' , isLogin, async (req, res) => {
     const { nickname, password, confirm } = req.body;
 
     try {
