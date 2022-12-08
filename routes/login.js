@@ -16,35 +16,41 @@ const tokenObject = {};
 router.post('/', async (req, res) => {
     const { nickname, password } = req.body;
 
-    const user = await User.findOne({where: {nickname}});
+    try {
 
-    const hashed = await bcrypt.hash(password, 10);
+        const user = await User.findOne({where: {nickname}});
 
-    const validatePw = await bcrypt.compare(password, hashed);
+        const hashed = await bcrypt.hash(password, 10);
 
-    if(!user || !validatePw) {
-        res.status(412).json({'errorMessage': '닉네임 또는 패스워드를 확인해주세요'});
-        return;
-    }
+        const validatePw = await bcrypt.compare(password, hashed);
+
+        if(!user || !validatePw) {
+            res.status(412).json({'errorMessage': '닉네임 또는 패스워드를 확인해주세요'});
+            return;
+        }
+        
+        const accessToken = jwt.sign(
+            { id: user.nickname },
+            SECRET_KEY,
+            { expiresIn: '30m' }
+        );
+
+        const refreshToken = jwt.sign(
+            {},
+            SECRET_KEY,
+            { expiresIn: '1d'}
+        );
+
+        tokenObject[refreshToken] = nickname;
+
+        res.cookie('accessToken', accessToken, { httpOnly: true });
+        res.cookie('refreshToken', refreshToken, { httpOnly: true });
+
+        res.status(200).json({'message': accessToken});
     
-    const accessToken = jwt.sign(
-        { id: user.nickname },
-        SECRET_KEY,
-        { expiresIn: '10s' }
-    );
-
-    const refreshToken = jwt.sign(
-        {},
-        SECRET_KEY,
-        { expiresIn: '1d'}
-    );
-
-    tokenObject[refreshToken] = nickname;
-
-    res.cookie('accessToken', accessToken, { httpOnly: true });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true });
-
-    res.status(200).json({'message': accessToken});
+    } catch(err) {
+        return res.status(400).json({'errorMessage': '로그인에 실패하였습니다.'});
+    }
     
 });
 

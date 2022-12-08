@@ -25,7 +25,6 @@ module.exports = async (req, res, next) => {
     console.log(isRefreshTokenValidate);
 
     if(!isRefreshTokenValidate) {
-        delete tokenObject[refreshToken];
         res.status(412).json({'errorMessage': '로그인 후 이용해주세요'});
         return;
     }
@@ -91,13 +90,9 @@ function createAccessToken(id) {
   
   function getAccessTokenPayload(accessToken) {
     try {
-      const payload = jwt.verify(accessToken, SECRET_KEY); 
+      const payload = jwt.verify(accessToken, SECRET_KEY);
+      return payload.id; 
     } catch (error) {
       return null;
     }
   }   
-
-
-    
-
-

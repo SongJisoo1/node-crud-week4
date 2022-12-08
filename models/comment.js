@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       underscored: false,
       paranoid: false,
       modelName: 'Comment',
-      tableName: 'comments',
+      tableName: 'Comment',
     }
   );
   return Comment;
