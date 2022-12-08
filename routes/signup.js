@@ -10,7 +10,7 @@ router.post('/' , async (req, res) => {
 
     try {
         const validNick = /^[A-Za-z0-9]{3,30}$/;
-        const validPassword = /^[A-Za-z0-9@!]{4,}$/;
+        const validPassword = /^[A-Za-z0-9]{4,}$/;
         const includeNick = new RegExp(nickname, 'g');
 
         // 아이디 유효성 검사
